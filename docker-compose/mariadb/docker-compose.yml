@@ -1,0 +1,26 @@
+version: "3.6"
+services:
+    mariadb:
+        container_name: mariadb
+        image: 'mariadb:10.6.1-focal'
+        command: client --default-character-set=utf8mb4 mysql --default-character-set=utf8mb4 mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4;' --innodb-flush-log-at-trx-commit=0 --lower_case_table_names=1
+        restart: always # 設定為 restart，則容器在異常停止後，會自動重新起動
+        hostname: 127.0.0.1
+        environment:
+            - 'MARIADB_ROOT_PASSWORD=PASSWORD'
+            - 'MYSQL_ROOT_HOST=172.18.0.1'
+            - 'MARIADB_DATABASE=ms_web_bank'
+            - 'MARIADB_USER=MSWEBBANK_DBA'
+            - 'MARIADB_PASSWORD=PASSWORD..'
+
+        ports: # 指定主端(Host)對應客端(Quest)的連接埠
+            - '3306:3306'
+        volumes:
+            - '.initdb.d:/docker-entrypoint-initdb.d'
+            - '.mariadb/:/var/lib/mysql'
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8891:8080

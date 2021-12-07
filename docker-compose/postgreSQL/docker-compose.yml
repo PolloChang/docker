@@ -1,0 +1,48 @@
+version: '3.6'
+
+services:
+
+  dictDB:
+    container_name: postgres
+    image: postgres:13.3
+    restart: always
+    environment:
+      POSTGRES_USER: DICT_SA
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: DICT
+      PGDATA: '/var/lib/postgresql/data/pgdata/'
+    ports:
+      - '5432:5432'
+    volumes:
+      - '/home/docker/data/postgresql/data:/var/lib/postgresql/data'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 4096M
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.1.2
+
+  
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'test@test.com'
+      PGADMIN_DEFAULT_PASSWORD: '1234'
+    ports:
+      - '8891:80'
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.1.3
+
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      config:
+          - subnet: "172.20.1.0/24"
+
+
